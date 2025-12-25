@@ -1,7 +1,5 @@
 import { Redis } from "ioredis";
 
-let redis;
-
 const redisOptions = {
   host: process.env.REDIS_HOST,
   port: parseInt(process.env.REDIS_PORT || "6379"),
@@ -11,11 +9,21 @@ const redisOptions = {
   tls: process.env.REDIS_TLS === "true" ? {} : undefined,
 };
 
-if (!global.__redis) {
-  console.log("Initializing shared Redis connection pool...");
-  global.__redis = new Redis(redisOptions);
+async function redisInstance() {
+  let instance;
+  if (global.__redis) {
+    instance = global.__redis;
+    return instance;
+  }
+  instance = new Redis(redisOptions);
+
+  instance.on("connect", () => console.log("✅ Redis connected"));
+  instance.on("error", (err) =>
+    console.error("❌ Redis connection error:", err),
+  );
+  instance.on("ready", () => console.log("🚀 Redis ready to receive commands"));
+  global.__redis = instance;
+  return instance;
 }
 
-redis = global.__redis;
-
-export { redis };
+export { redisInstance };
