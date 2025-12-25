@@ -6,7 +6,6 @@ async function testBullMq(redis) {
   });
 
   try {
-    // Forces BullMQ to instantiate its internal Redis client
     await myQueue.client;
 
     // Executes real BullMQ commands
