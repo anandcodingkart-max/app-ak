@@ -16,22 +16,22 @@ export async function processInventoryUpdate(shop, payload) {
             id
             variant {
               id
-              title # This is the Variant Name
-              price # This is the Price
+              title 
+              price
               inventoryQuantity
               image {
-                url # This is the Variant Image URL
+                url
               }
               product {
                 id
-                title # This is the Product Name
+                title
                 handle
               }
             }
           }
           shop {
-            currencyCode # This provides the Currency (e.g., USD)
-            primaryDomain { # <--- ADD THIS to make it dynamic
+            currencyCode
+            primaryDomain {
                 url
             }
           }
