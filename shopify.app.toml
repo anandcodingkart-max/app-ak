@@ -23,9 +23,13 @@ uri = "/webhooks/app/scopes_update"
 topics = ["orders/create"]
 uri = "/orders"
 
+[[webhooks.subscriptions]]
+topics = [ "inventory_levels/update" ]
+uri = "/inventory"
+
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_products, write_products, read_orders, write_orders, write_order_edits"
+scopes = "read_products, write_products, read_orders, write_orders, write_order_edits, read_inventory"
 
 [auth]
 redirect_urls = [ "https://example.com/api/auth" ]
