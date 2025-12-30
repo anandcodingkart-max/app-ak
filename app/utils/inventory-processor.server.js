@@ -64,16 +64,10 @@ export async function processInventoryUpdate(shop, payload) {
       ctaUrl: `${shopDomain}/products/${productHandle}?variant=${numericVariantId}`,
     };
 
-    console.log("Extracted Data:", extractedData);
-
     const notificationRequests = await getNotificationRequests(
       product.id,
       variant.id,
     );
-
-    console.log("VARIANT: ", variant);
-    console.log("PRODUCT: ", product);
-    console.log("NOTIFICATION REQUESTS: ", notificationRequests);
 
     if (notificationRequests.length && Number(variant.inventoryQuantity) > 0) {
       await sendNotification(notificationRequests, extractedData);

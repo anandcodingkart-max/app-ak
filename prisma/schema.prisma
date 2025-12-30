@@ -19,6 +19,7 @@ enum Status {
   ACTIVE
   INACTIVE
   DELETED
+  EXPIRED
 }
 
 model Session {
@@ -53,4 +54,17 @@ model InventoryNotificationRequest {
 
   @@index([variantId])
   @@index([email])
+}
+
+model GiftProducts {
+  id             Int      @id @default(autoincrement())
+  recipientName  String
+  recipientEmail String
+  giftMessage    String
+  variantId      String
+  couponCode     String
+  expireDate     DateTime
+  status         Status   @default(PENDING)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

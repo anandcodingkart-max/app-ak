@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Template</title>
+    <style>
+      /* Reset styles for email clients */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Arial", sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        padding: 20px;
+        line-height: 1.6;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .email-header {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+      }
+
+      .email-header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+
+      .email-header p {
+        font-size: 16px;
+        opacity: 0.9;
+      }
+
+      .email-body {
+        padding: 30px;
+        color: #333333;
+      }
+
+      .greeting {
+        font-size: 20px;
+        margin-bottom: 20px;
+        color: #2c3e50;
+      }
+
+      .recipient-name {
+        font-weight: bold;
+        color: #6a11cb;
+      }
+
+      .message-box {
+        background-color: #f8f9fa;
+        border-left: 4px solid #6a11cb;
+        padding: 20px;
+        margin: 25px 0;
+        border-radius: 0 4px 4px 0;
+      }
+
+      .message-box p {
+        margin-bottom: 10px;
+      }
+
+      .highlight {
+        background-color: #fffacd;
+        padding: 3px 6px;
+        border-radius: 3px;
+        font-weight: bold;
+      }
+
+      .coupon-box {
+        background-color: #e8f4ff;
+        border: 2px dashed #2575fc;
+        padding: 20px;
+        text-align: center;
+        margin: 25px 0;
+        border-radius: 8px;
+      }
+
+      .coupon-code {
+        font-size: 32px;
+        font-weight: bold;
+        color: #2575fc;
+        letter-spacing: 3px;
+        margin: 10px 0;
+      }
+
+      .expiry-note {
+        color: #e74c3c;
+        font-weight: bold;
+        margin: 15px 0;
+        font-size: 18px;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background: #4f46e5;
+        color: #ffffff;
+        text-decoration: none;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-weight: bold;
+        font-size: 18px;
+        margin: 25px 0;
+        transition: all 0.3s ease;
+      }
+
+      .footer {
+        background-color: #2c3e50;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      .footer a {
+        color: #6a11cb;
+        text-decoration: none;
+      }
+
+      .instructions {
+        background-color: #f9f9f9;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .instructions h3 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 480px) {
+        .email-body {
+          padding: 20px;
+        }
+
+        .email-header {
+          padding: 20px 15px;
+        }
+
+        .email-header h1 {
+          font-size: 24px;
+        }
+
+        .coupon-code {
+          font-size: 26px;
+        }
+
+        .cta-button {
+          padding: 12px 24px;
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="email-header">
+        <h1>🎁 You've Received a Gift!</h1>
+        <p>Something special is waiting for you</p>
+      </div>
+
+      <div class="email-body">
+        <div class="greeting">
+          Hello <span class="recipient-name">{{recipientName}}</span>,
+        </div>
+
+        <p>
+          We're excited to let you know that a special product has been added to
+          your gift box!
+        </p>
+
+        <div class="message-box">
+          <p><strong>Gift Message:</strong></p>
+          <p>"{{giftMessage}}"</p>
+        </div>
+
+        <div class="expiry-note">
+          ⏰ Important: This gift will expire in 24 hours!
+        </div>
+
+        <p>
+          To claim your gift, please click the button below and use the provided
+          coupon code during checkout.
+        </p>
+
+        <div style="text-align: center">
+          <a href="{{ctaUrl}}" class="cta-button">Claim Your Gift Now</a>
+        </div>
+
+        <div class="coupon-box">
+          <p><strong>Your Coupon Code:</strong></p>
+          <div class="coupon-code">{{couponCode}}</div>
+          <p><strong>Expires:</strong> {{expireDate}}</p>
+        </div>
+
+        <div class="instructions">
+          <h3>How to redeem your gift:</h3>
+          <ol>
+            <li>Click the "Claim Your Gift Now" button above</li>
+            <li>Enter the coupon code shown above</li>
+            <li>Complete your purchase to receive your gift!</li>
+          </ol>
+        </div>
+
+        <p>
+          If you have any questions or need assistance, please don't hesitate to
+          contact our support team.
+        </p>
+
+        <p>Best regards,<br />Anand Max Store</p>
+      </div>
+
+      <div class="footer">
+        <p>© {{year}} Anand Max Store. All rights reserved.</p>
+        <p>If you didn't expect this email, you can safely ignore it.</p>
+      </div>
+    </div>
+  </body>
+</html>

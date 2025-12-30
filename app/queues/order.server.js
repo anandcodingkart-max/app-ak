@@ -1,6 +1,6 @@
 import { Queue, Worker } from "bullmq";
 import { redisInstance } from "../redis.server";
-import { processOrderSwap } from "../utils/order-processor.server";
+import { processOrder } from "../utils/order-processor.server";
 
 const redis = await redisInstance();
 
@@ -12,10 +12,10 @@ const worker = new Worker(
   "order-processing",
   async (job) => {
     console.log("WORKER IS ACTIVE");
-    if (job.name === "swap-blend-product") {
+    if (job.name === "order-data-process") {
       const { shop, payload } = job.data;
       console.log("JOB STARTED");
-      await processOrderSwap(shop, payload);
+      await processOrder(shop, payload);
     }
   },
   {

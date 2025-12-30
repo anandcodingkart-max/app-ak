@@ -29,7 +29,7 @@ uri = "/inventory"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_products, write_products, read_orders, write_orders, write_order_edits, read_inventory"
+scopes = "read_products, write_products, read_orders, write_orders, write_order_edits, read_inventory, write_discounts, read_discounts"
 
 [auth]
 redirect_urls = [ "https://example.com/api/auth" ]

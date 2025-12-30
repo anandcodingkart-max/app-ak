@@ -35,7 +35,7 @@ export async function action({ request }) {
 
   if (topic === "ORDERS_CREATE") {
     await orderQueue.add(
-      "swap-blend-product",
+      "order-data-process",
       {
         shop,
         payload,
