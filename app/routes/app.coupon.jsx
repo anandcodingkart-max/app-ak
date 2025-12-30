@@ -1,4 +1,4 @@
-import { Form, useFetcher, useLoaderData, useNavigation } from "react-router";
+import { useFetcher, useLoaderData, useNavigation } from "react-router";
 import db from "../db.server";
 import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
@@ -71,14 +71,16 @@ export default function CouponsPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto relative">
+    <div className="px-6 py-2 max-w-7xl mx-auto relative">
       {isSubmitting && <Loader />}
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Gift Coupons</h1>
-        <p className="text-gray-600">
-          Manage and track all gift coupons in your system
-        </p>
+      <div className="mb-4 flex items-center justify-between">
+        <div className="">
+          <h1 className="text-lg font-bold text-gray-700">Gift Coupons</h1>
+          <p className="text-gray-600 text-sm">
+            Manage and track all gift coupons in your system
+          </p>
+        </div>
       </div>
 
       {/* Coupons Table */}
