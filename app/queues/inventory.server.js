@@ -11,10 +11,8 @@ export const inventoryQueue = new Queue("inventory-processing", {
 const worker = new Worker(
   "inventory-processing",
   async (job) => {
-    console.log("WORKER IS ACTIVE");
     if (job.name === "update-inventory-stock") {
       const { shop, payload } = job.data;
-      console.log("JOB STARTED");
       await processInventoryUpdate(shop, payload);
     }
   },

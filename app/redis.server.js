@@ -21,7 +21,9 @@ async function redisInstance() {
   instance.on("error", (err) =>
     console.error("❌ Redis connection error:", err),
   );
-  instance.on("ready", () => console.log("🚀 Redis ready to receive commands"));
+  instance.on("ready", () => {
+    console.log("🚀 Redis ready to receive commands");
+  });
   global.__redis = instance;
   return instance;
 }

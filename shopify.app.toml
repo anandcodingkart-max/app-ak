@@ -1,5 +1,3 @@
-# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
-
 client_id = "9f26293cef94b7b91e912fa60c71bc8c"
 name = "app-ak"
 application_url = "https://example.com"
@@ -21,7 +19,7 @@ uri = "/webhooks/app/scopes_update"
 
 [[webhooks.subscriptions]]
 topics = ["orders/create"]
-uri = "/orders"
+uri = "/webhook/orders"
 
 [[webhooks.subscriptions]]
 topics = [ "inventory_levels/update" ]
@@ -29,7 +27,7 @@ uri = "/inventory"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_products, write_products, read_orders, write_orders, write_order_edits, read_inventory, write_discounts, read_discounts"
+scopes = "read_products, write_products, read_orders, write_orders, write_order_edits, read_inventory, write_discounts, read_discounts, read_customers"
 
 [auth]
 redirect_urls = [ "https://example.com/api/auth" ]

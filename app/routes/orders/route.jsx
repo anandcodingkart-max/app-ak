@@ -18,8 +18,6 @@ export async function loader({ request }) {
 }
 
 export async function action({ request }) {
-  console.log("Webhook triggered");
-
   if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,

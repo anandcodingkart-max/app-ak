@@ -1,6 +1,6 @@
 import { authenticate } from "../../shopify.server";
 import { cors } from "remix-utils/cors";
-import { inventoryQueue } from "../../queues/inventory.server";
+import { orderQueue } from "../../queues/order.server";
 
 export async function loader({ request }) {
   if (request.method === "OPTIONS") {
@@ -14,11 +14,10 @@ export async function loader({ request }) {
     });
   }
 
-  return cors(request, Response.json({ message: "success", status: 200 }));
+  return cors(request, Response.json({ message: "success" }));
 }
 
 export async function action({ request }) {
-
   if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
@@ -30,21 +29,19 @@ export async function action({ request }) {
     });
   }
 
-  const { payload, shop, topic } = await authenticate.webhook(request);
+  const { payload, shop } = await authenticate.webhook(request);
 
-  if (topic === "INVENTORY_LEVELS_UPDATE") {
-    await inventoryQueue.add(
-      "update-inventory-stock",
-      {
-        shop,
-        payload,
-      },
-      {
-        attempts: 3,
-        backoff: { type: "exponential", delay: 5000 },
-      },
-    );
-  }
+  await orderQueue.add(
+    "order-data-process",
+    {
+      shop,
+      payload,
+    },
+    {
+      attempts: 3,
+      backoff: { type: "exponential", delay: 5000 },
+    },
+  );
 
   return cors(request, Response.json({ success: true, status: 200 }));
 }

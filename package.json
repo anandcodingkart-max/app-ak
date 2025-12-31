@@ -37,6 +37,7 @@
     "@shopify/shopify-app-session-storage-prisma": "^8.0.0",
     "@tailwindcss/vite": "^4.1.18",
     "bullmq": "^5.66.2",
+    "crypto": "^1.0.1",
     "ioredis": "^5.8.2",
     "isbot": "^5.1.31",
     "nodemailer": "^7.0.12",

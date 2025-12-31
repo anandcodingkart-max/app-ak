@@ -1,7 +1,7 @@
 import { useFetcher, useLoaderData, useNavigation } from "react-router";
-import db from "../db.server";
-import { useEffect, useState } from "react";
-import Loader from "../components/Loader";
+import db from "../../db.server";
+import { useEffect } from "react";
+import Loader from "../../components/Loader";
 
 // Loader: fetch all coupons from DB
 export const loader = async () => {
@@ -61,7 +61,7 @@ export default function CouponsPage() {
     switch (status) {
       case "Pending":
         return "bg-yellow-50 text-yellow-700 border border-yellow-200";
-      case "EXPIRED":
+      case "Expired":
         return "bg-red-50 text-red-700 border border-red-200";
       case "Used":
         return "bg-green-100 text-gray-700 border border-green-200";
@@ -144,7 +144,8 @@ export default function CouponsPage() {
                   };
                   const isExpired =
                     coupon.status === "EXPIRED" || status === "EXPIRED";
-                  const couponStatus = couponMap[coupon.status];
+                  let couponStatus = couponMap[coupon.status];
+                  if (isExpired) couponStatus = "Expired";
                   const expiryDate = new Date(coupon.expireDate);
 
                   return (

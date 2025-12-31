@@ -17,7 +17,6 @@ export async function loader({ request }) {
 }
 
 export async function action({ request }) {
-  console.log("Webhook triggered");
 
   if (request.method === "OPTIONS") {
     return new Response(null, {
@@ -31,14 +30,9 @@ export async function action({ request }) {
   }
 
   const body = await request.json();
-  console.log("BODY: ", body);
   let { name, email, variantId, productId } = body;
   productId = `gid://shopify/Product/${productId}`;
   variantId = `gid://shopify/ProductVariant/${variantId}`;
-
-  console.log("BODY: ", body);
-  console.log("PRODUCT ID: ", productId);
-  console.log("VARIANT ID: ", variantId);
 
   const isSubscribed = await db.InventoryNotificationRequest.findFirst({
     where: {
@@ -49,10 +43,7 @@ export async function action({ request }) {
     },
   });
 
-  console.log("IS SUBSCRIBED: ", isSubscribed);
-
   if (!isSubscribed) {
-    console.log("NOT SUBSCRIBED");
     await db.InventoryNotificationRequest.create({
       data: {
         name,

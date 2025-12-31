@@ -7,13 +7,9 @@ import { mailer } from "../utils/mailer.server";
 export async function processOrder(shop, payload) {
   try {
     const { admin } = await unauthenticated.admin(shop);
-    console.log(`Processing swap for order: ${payload.name} on ${shop}`);
 
     const lineItems = payload.line_items || [];
     if (!lineItems.length) return true;
-
-    console.log("LINE ITEMS: ", lineItems);
-    console.log("PROPERTIES: ", JSON.stringify(lineItems[0].properties));
 
     for (const item of lineItems) {
       const blendProperty = item.properties?.find((p) => p.name === "Blend");
@@ -227,12 +223,6 @@ async function addGiftProduct(admin, item) {
     const giftMessage = item.properties?.find(
       (p) => p.name === "giftMessage",
     )?.value;
-
-    console.log("ITEM: ", item);
-    console.log("VARIANT ID: ", variantId);
-    console.log("RECIPIENT NAME: ", recipientName);
-    console.log("RECIPIENT EMAIL: ", recipientEmail);
-    console.log("GIFT MESSAGE: ", giftMessage);
 
     if (!recipientName || !recipientEmail || !giftMessage) return;
 

@@ -3,12 +3,15 @@ import { useFetcher } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
+// import { syncWebhooksAndScopes } from "../utils/webhook.server";
+// import shopify from "../shopify.server";
 
-export const loader = async ({ request }) => {
-  await authenticate.admin(request);
+// export const loader = async ({ request }) => {
+//   await authenticate.admin(request);
+//   await syncWebhooksAndScopes({ shopify, request });
 
-  return null;
-};
+//   return null;
+// };
 
 export const action = async ({ request }) => {
   const { admin } = await authenticate.admin(request);

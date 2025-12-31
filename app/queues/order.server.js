@@ -11,10 +11,8 @@ export const orderQueue = new Queue("order-processing", {
 const worker = new Worker(
   "order-processing",
   async (job) => {
-    console.log("WORKER IS ACTIVE");
     if (job.name === "order-data-process") {
       const { shop, payload } = job.data;
-      console.log("JOB STARTED");
       await processOrder(shop, payload);
     }
   },
