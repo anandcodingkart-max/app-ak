@@ -1,3 +1,6 @@
+import path from "path";
+import fs from "fs/promises";
+import { mailer } from "../../utils/mailer.server";
 class OrderHelper {
   async getProductByTag(admin, tag) {
     const productSearch = await admin.graphql(
@@ -105,6 +108,98 @@ class OrderHelper {
 
     const commitData = await commitResponse.json();
     return commitData;
+  }
+  async createShopifyDiscount(admin, { couponCode, discountAmount }) {
+    const query = `#graphql
+    mutation discountCodeBasicCreate($basicCodeDiscount: DiscountCodeBasicInput!) {
+      discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
+        codeDiscountNode {
+          id
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+    const variables = {
+      basicCodeDiscount: {
+        title: `Gift Discount ${couponCode}`,
+        code: couponCode,
+        startsAt: new Date().toISOString(),
+
+        customerSelection: {
+          all: true,
+        },
+
+        customerGets: {
+          value: {
+            discountAmount: {
+              amount: String(discountAmount),
+              appliesOnEachItem: false,
+            },
+          },
+          items: {
+            all: true,
+          },
+        },
+
+        appliesOncePerCustomer: true,
+        usageLimit: 1,
+      },
+    };
+
+    const response = await admin.graphql(query, { variables });
+    const result = await response.json();
+
+    if (result.errors) {
+      console.error("GraphQL Errors:", result.errors);
+      throw new Error(result.errors[0].message);
+    }
+
+    const data = result.data?.discountCodeBasicCreate;
+
+    if (!data) {
+      throw new Error("No data returned from Shopify discount mutation");
+    }
+
+    if (data.userErrors?.length) {
+      console.error("Shopify User Errors:", data.userErrors);
+      throw new Error(data.userErrors[0].message);
+    }
+
+    return data.codeDiscountNode.id;
+  }
+  async sendGiftMail(email, data) {
+    const templatePath = path.join(
+      process.cwd(),
+      "app/templates/gift-product.html",
+    );
+    const template = await fs.readFile(templatePath, "utf-8");
+
+    const replacements = {
+      recipientName: data.recipientName,
+      giftMessage: data.giftMessage,
+      ctaUrl: data.ctaUrl,
+      couponCode: data.couponCode,
+      expireDate: data.expireDate,
+      year: new Date().getFullYear(),
+    };
+
+    let html = template;
+    for (const [key, value] of Object.entries(replacements)) {
+      html = html.replaceAll(`{{${key}}}`, value ?? "");
+    }
+
+    await mailer.sendMail({
+      from: `"Anand Max Store" <${process.env.GMAIL_USER}>`,
+      to: email,
+      subject: `🎁 You've Received a Gift!`,
+      html,
+    });
+    console.log(`MAIL SEND TO ${data.recipientName} at ${email}`);
   }
 }
 export default OrderHelper;

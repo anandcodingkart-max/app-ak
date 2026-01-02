@@ -1,6 +1,6 @@
 import { Queue, Worker } from "bullmq";
 import { redisInstance } from "../redis.server";
-import { processOrder } from "../utils/order-processor.server";
+import { processOrderController } from "../controllers";
 
 const redis = await redisInstance();
 
@@ -11,9 +11,10 @@ export const orderQueue = new Queue("order-processing", {
 const worker = new Worker(
   "order-processing",
   async (job) => {
+    console.log("ORDER QUEUE CALLED: ", job.name);
     if (job.name === "order-data-process") {
       const { shop, payload } = job.data;
-      await processOrder(shop, payload);
+      await processOrderController(shop, payload);
     }
   },
   {

@@ -136,6 +136,66 @@ async function findVariantIdBySelectedOptions(selectedOptions) {
   return matchedVariant.node.id;
 }
 
+export async function findVariantByInventoryId(admin, inventoryItemId) {
+  const response = await admin.graphql(
+    `#graphql
+        query getProductAndVariant($id: ID!) {
+          inventoryItem(id: $id) {
+            id
+            variant {
+              id
+              title 
+              price
+              inventoryQuantity
+              image {
+                url
+              }
+              product {
+                id
+                title
+                handle
+              }
+            }
+          }
+          shop {
+            currencyCode
+            primaryDomain {
+                url
+            }
+          }
+        }`,
+    { variables: { id: `gid://shopify/InventoryItem/${inventoryItemId}` } },
+  );
+
+  const result = await response?.json();
+  return result;
+}
+
 function getNumericIdFromGid(gid) {
   return gid.split("/").pop();
+}
+
+export function generateCouponCode(storeName = "Anand Max Store") {
+  const prefix = storeName
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+
+  const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+
+  const timePart = Date.now().toString().slice(-4);
+
+  return `${prefix}-${randomPart}${timePart}`;
+}
+
+export function formatExpiryDate(date) {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
 }

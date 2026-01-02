@@ -19,11 +19,11 @@ uri = "/webhooks/app/scopes_update"
 
 [[webhooks.subscriptions]]
 topics = ["orders/create"]
-uri = "/webhook/orders"
+uri = "/webhook/order"
 
 [[webhooks.subscriptions]]
 topics = [ "inventory_levels/update" ]
-uri = "/inventory"
+uri = "/webhook/inventory"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes

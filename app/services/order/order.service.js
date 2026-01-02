@@ -1,5 +1,10 @@
 import OrderHelper from "./order-helper.service";
-import { getVariantData } from "../../utils/helper";
+import {
+  formatExpiryDate,
+  generateCouponCode,
+  getVariantData,
+} from "../../utils/helper";
+import db from "../../db.server";
 class Order {
   async processOrderSwap(admin, payload, item, blendProperty) {
     try {
@@ -153,7 +158,7 @@ class Order {
       const variantData = await getVariantData(variantId);
       const discountAmount = variantData.price;
 
-      await createShopifyDiscount(admin, {
+      await new OrderHelper().createShopifyDiscount(admin, {
         couponCode,
         discountAmount,
       });
@@ -169,13 +174,34 @@ class Order {
         },
       });
 
-      await sendGiftMail(recipientEmail, {
+      await new OrderHelper().sendGiftMail(recipientEmail, {
         recipientName: recipientName,
         giftMessage: giftMessage,
         ctaUrl: ctaUrl,
         couponCode: couponCode,
         expireDate: formatExpiryDate(expireDate),
       });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  async expireCoupon(item) {
+    try {
+      const couponCode = item.properties?.find(
+        (p) => p.name === "couponCode",
+      )?.value;
+      console.log("COUPON CODE: ", couponCode);
+
+      await db.giftProducts.updateMany({
+        where: {
+          couponCode: couponCode,
+        },
+        data: {
+          status: "EXPIRED",
+        },
+      });
+      console.log("COUPON CODE EXPIRE SUCCESSFULL");
     } catch (error) {
       console.log(error);
       throw error;

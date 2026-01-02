@@ -1,6 +1,6 @@
 import { Queue, Worker } from "bullmq";
 import { redisInstance } from "../redis.server";
-import { processInventoryUpdate } from "../utils/inventory-processor.server";
+import { processInventoryUpdateController } from "../controllers";
 
 const redis = await redisInstance();
 
@@ -13,7 +13,7 @@ const worker = new Worker(
   async (job) => {
     if (job.name === "update-inventory-stock") {
       const { shop, payload } = job.data;
-      await processInventoryUpdate(shop, payload);
+      await processInventoryUpdateController(shop, payload);
     }
   },
   {
