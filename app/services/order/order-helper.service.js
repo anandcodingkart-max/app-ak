@@ -94,6 +94,31 @@ class OrderHelper {
     const editData = await editResponse.json();
     return editData;
   }
+  async addVariantToEdit(admin, orderEditId, variantId, quantity) {
+    const response = await admin.graphql(
+      `#graphql
+      mutation addVariant($id: ID!, $vId: ID!, $qty: Int!) {
+        orderEditAddVariant(id: $id, variantId: $vId, quantity: $qty) {
+          userErrors { message }
+        }
+      }`,
+      { variables: { id: orderEditId, vId: variantId, qty: quantity } },
+    );
+    return response.json();
+  }
+
+  async removeLineItem(admin, orderEditId, calcLineItemId) {
+    const response = await admin.graphql(
+      `#graphql
+      mutation removeOld($id: ID!, $liId: ID!) {
+        orderEditSetQuantity(id: $id, lineItemId: $liId, quantity: 0) {
+          userErrors { message }
+        }
+      }`,
+      { variables: { id: orderEditId, liId: calcLineItemId } },
+    );
+    return response.json();
+  }
   async commitOrderUpdate(admin, calcOrder) {
     const commitResponse = await admin.graphql(
       `#graphql

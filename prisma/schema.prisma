@@ -68,3 +68,51 @@ model GiftProducts {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
+
+model KitCategories {
+  id           Int      @id @default(autoincrement())
+  categoryName String
+  status       Status   @default(ACTIVE)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  kitTags KitTags[]
+}
+
+model KitTags {
+  id         Int      @id @default(autoincrement())
+  tagName    String
+  categoryId Int
+  status     Status   @default(ACTIVE)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  kitCategory KitCategories @relation(fields: [categoryId], references: [id])
+}
+
+model KitOrders {
+  id         Int      @id @default(autoincrement())
+  customerId String
+  productId  String
+  variantId  String
+  kitChoice  String
+  tags       Json
+  status     Status   @default(ACTIVE)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([customerId, productId, variantId])
+}
+
+model kitOrderHistory {
+  id         Int      @id @default(autoincrement())
+  customerId String
+  productId  String
+  variantId  String
+  kitChoice  String
+  categoryId Int?
+  tagId      Int?
+  status     Status   @default(ACTIVE)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

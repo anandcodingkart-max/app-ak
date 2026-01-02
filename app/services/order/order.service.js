@@ -6,37 +6,31 @@ import {
 } from "../../utils/helper";
 import db from "../../db.server";
 class Order {
-  async processOrderSwap(admin, payload, item, blendProperty) {
+  async swapOrder(body) {
     try {
-      if (!blendProperty?.value) return;
-
-      const blendTag = blendProperty.value;
-      const targetVariantTitle = item.variant_title;
+      const { admin, item, payload, tag, variantTitle } = body;
 
       try {
-        const productData = await new OrderHelper().getProductByTag(
-          admin,
-          blendTag,
-        );
+        const productData = await new OrderHelper().getProductByTag(admin, tag);
         const product = productData.data?.products?.edges?.[0]?.node;
 
         if (!product) {
-          console.log(`No product found with tag: ${blendTag}`);
+          console.log(`No product found with tag: ${tag}`);
           return;
         }
 
         const matchingVariant = product.variants.edges.find(
-          (v) => v.node.title === targetVariantTitle,
+          (v) => v.node.title === variantTitle,
         );
 
         if (!matchingVariant) {
           console.log(
-            `No variant matching title "${targetVariantTitle}" found for tag ${blendTag}`,
+            `No variant matching title "${variantTitle}" found for tag ${tag}`,
           );
           return;
         }
 
-        const beginData = await await new OrderHelper().beginOrderUpdate(
+        const beginData = await new OrderHelper().beginOrderUpdate(
           admin,
           payload,
         );
@@ -105,6 +99,25 @@ class Order {
       throw error;
     }
   }
+
+  async processOrderSwap(admin, payload, item, blendProperty) {
+    try {
+      if (!blendProperty?.value) return;
+
+      console.log("LINE ITEMS: ", item);
+
+      const tag = blendProperty.value;
+      const variantTitle = item.variant_title;
+
+      await this.swapOrder({ admin, item, payload, tag, variantTitle });
+
+      return true;
+    } catch (err) {
+      console.error(`Error processing item ${item.title}:`, err);
+      throw err;
+    }
+  }
+
   async addGiftProduct(admin, item) {
     try {
       const variantId = item.variant_id;
@@ -131,7 +144,7 @@ class Order {
           }
         }
         shop {
-           
+
             primaryDomain {
                 url
             }
@@ -206,6 +219,56 @@ class Order {
       console.log(error);
       throw error;
     }
+  }
+  async processKitSwap(admin, payload, item, kitChoice, selectedBrews) {
+    try {
+      const brewTags = selectedBrews.value.split(",").map((tag) => tag.trim());
+      console.log("Brew Tags:", brewTags);
+      const variantTitle = item.variant_title;
+      const kitChoice = item.properties?.find((p) => p.name === "kitChoice");
+      if (kitChoice === "complete") {
+        await this.swapCompleteKit({
+          admin,
+          payload,
+          item,
+          variantTitle,
+          kitChoice,
+          selectedBrews,
+        });
+      }
+    } catch (error) {
+      console.error("Error in processKitSwap:", error.message);
+      return { error: error.message };
+    }
+  }
+
+  async swapCompleteKit(body) {
+    const { admin, payload, item, variantTitle, kitChoice, selectedBrews } =
+      body;
+    await db.KitOrders.create({
+      data: {
+        customerId: String(payload.customer.id),
+        productId: String(item.product_id),
+        variantId: String(item.variant_id),
+        kitChoice: kitChoice,
+        tags: selectedBrews,
+      },
+    });
+    await db.kitOrderHistory.create({
+      data: {
+        customerId: String(payload.customer.id),
+        productId: String(item.product_id),
+        variantId: String(item.variant_id),
+        kitChoice: kitChoice,
+      },
+    });
+    await this.swapOrder({
+      admin,
+      item,
+      payload,
+      tag: "coffee-sample-box-001",
+      variantTitle,
+    });
   }
 }
 export default Order;

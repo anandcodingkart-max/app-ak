@@ -16,6 +16,8 @@ export async function loader({ request }) {
   const body = await request.json();
   console.log("SUBSCRIPTION WEBHOOK BODY: ", body);
 
+  console.log("SUBSCRIPTION PROPERTIES: ", body.items[0].properties);
+
   return cors(
     request,
     Response.json({
@@ -43,6 +45,8 @@ export async function action({ request }) {
 
   const body = await request.json();
   console.log("SUBSCRIPTION WEBHOOK BODY: ", body);
+  console.log("SUBSCRIPTION PROPERTIES: ", body.items[0].properties);
+  console.log("JSON BODY: ", JSON.stringify(body));
 
   return cors(request, Response.json({ success: true, status: 200, ok: true }));
 }

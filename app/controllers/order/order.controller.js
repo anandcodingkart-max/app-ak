@@ -8,7 +8,7 @@ export async function processOrderController(shop, payload) {
   if (!lineItems.length) return true;
   let data;
 
-  console.log("LINE ITEMS: ", lineItems);
+  console.log("PAYLOAD: ", payload);
 
   for (const item of lineItems) {
     const blendProperty = item.properties?.find((p) => p.name === "Blend");
@@ -25,9 +25,21 @@ export async function processOrderController(shop, payload) {
       await new Order().addGiftProduct(admin, item);
     }
     const couponCode = item.properties?.find((p) => p.name === "couponCode");
-    console.log("COUPON CODE: ", couponCode);
     if (couponCode) {
       await new Order().expireCoupon(item);
+    }
+    const kitChoice = item.properties?.find((p) => p.name === "kitChoice");
+    const selectedBrews = item.properties?.find(
+      (p) => p.name === "selectedBrews",
+    );
+    if (kitChoice && selectedBrews) {
+      await new Order().processKitSwap(
+        admin,
+        payload,
+        item,
+        kitChoice,
+        selectedBrews,
+      );
     }
   }
   return data ?? {};
