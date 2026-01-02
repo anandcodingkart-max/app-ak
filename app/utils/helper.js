@@ -1,3 +1,6 @@
+import { UNAUTHORIZED } from "../helper/status-code";
+import crypto from "crypto";
+import { cors } from "remix-utils/cors";
 export async function getVariantData(variantId) {
   const gid = `gid://shopify/ProductVariant/${variantId}`;
 
@@ -198,4 +201,26 @@ export function formatExpiryDate(date) {
     minute: "2-digit",
     hour12: true,
   });
+}
+export async function verifyShopifyHmac(request) {
+  const shopifyHmac = request.headers.get("x-shopify-hmac-sha256");
+
+  if (!shopifyHmac) {
+    return false;
+  }
+
+  const bodyClone = request.clone();
+  const rawBody = await bodyClone.text();
+
+  const calculatedHmacDigest = crypto
+    .createHmac("sha256", process.env.SHOPIFY_API_SECRET)
+    .update(rawBody, "utf8") // Ensure utf8 encoding
+    .digest("base64");
+
+  const hmacValid = crypto.timingSafeEqual(
+    Buffer.from(calculatedHmacDigest, "base64"),
+    Buffer.from(shopifyHmac, "base64"),
+  );
+
+  return hmacValid;
 }
